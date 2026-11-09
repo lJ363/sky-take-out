@@ -1,6 +1,7 @@
 package com.sky.service.impl;
 
 import com.sky.constant.MessageConstant;
+import com.sky.constant.PasswordConstant;
 import com.sky.constant.StatusConstant;
 import com.sky.dto.EmployeeDTO;
 import com.sky.dto.EmployeeLoginDTO;
@@ -10,10 +11,13 @@ import com.sky.exception.AccountNotFoundException;
 import com.sky.exception.PasswordErrorException;
 import com.sky.mapper.EmployeeMapper;
 import com.sky.service.EmployeeService;
+import org.apache.ibatis.annotations.Insert;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.DigestUtils;
+
+import java.time.LocalDateTime;
 
 @Service
 public class EmployeeServiceImpl implements EmployeeService {
@@ -70,6 +74,50 @@ public class EmployeeServiceImpl implements EmployeeService {
         //因为Employee里和EmployeeDTO里不完全一致，有其他的
         //如设置账号的状态，默认正常状态，1为正常，0为锁定
         employee.setStatus(StatusConstant.ENABLE);
+
+        //设置密码，默认密码为123456
+        employee.setPassword(DigestUtils.md5DigestAsHex(PasswordConstant.DEFAULT_PASSWORD.getBytes()));
+
+        //设置当前记录的 创建时间和修改时间
+        employee.setCreateTime(LocalDateTime.now());
+        employee.setUpdateTime(LocalDateTime.now());
+
+        //设置当前记录的创建人id和修改人id
+        //TODO  以后改为登录用户的id
+        employee.setCreateUser(10L);
+        employee.setUpdateUser(10L);
+
+//        /**
+//         * 插入员工数据
+//         *
+//         */
+//        @Insert("insert into employee()")
+//        void insert(Employee employee);
     }
 
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
